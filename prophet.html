@@ -46,50 +46,23 @@ body{margin:0;background:#dccfa8;color:#2c2114;font-family:'IM Fell English',Geo
 <div class="powls"><div class="powl"><div class="pwho">Swyx <span>@swyx · AI engineering · Latent Space</span></div><p>havent seen many people outside anthropic ultracode yet. this thing is scarily good at burning tokens but you need to set up your repo to parallelize properly to make use of the fanout that i think subagents are best…</p></div><div class="powl"><div class="pwho">Thibault Sottiaux <span>@thsottiaux · Anthropic</span></div><p>Codex can see and set its own /goal. Everything we build, we build also as a tool for the agent. This is a generalization of meta prompting, where you let the agent set its own task based on your intent.…</p></div><div class="powl"><div class="pwho">Garry Tan <span>@garrytan · Y Combinator · president</span></div><p>Open source is the escape hatch for businesses to be able to continue to control their own destiny long term https://t.co/9hVUR5w6Lp</p></div></div>
 <div class="pfoot">Mischief managed. · <a href="index.html">← back to the Muggle edition</a> · <a href="https://amberhuang.world/" target="_blank">Amber Huang</a></div>
 </div>
-<div id="pet" title="drag me anywhere 🐾">
-  <svg width="104" height="104" viewBox="0 0 104 104">
-    <path id="tail" d="M74 74 q22 -2 22 -28 q0 -12 -10 -12 q-7 0 -7 8" fill="#e8c878" stroke="none"/>
-    <ellipse cx="52" cy="74" rx="26" ry="20" fill="#f3dca0"/>
-    <ellipse cx="52" cy="80" rx="15" ry="12" fill="#fbf0cf"/>
-    <ellipse cx="40" cy="92" rx="7" ry="5" fill="#f3dca0"/>
-    <ellipse cx="64" cy="92" rx="7" ry="5" fill="#f3dca0"/>
-    <path d="M30 56 q-8 -10 -2 -18" fill="none" stroke="#f3dca0" stroke-width="6" stroke-linecap="round"/>
-    <path d="M74 56 q8 -10 2 -18" fill="none" stroke="#f3dca0" stroke-width="6" stroke-linecap="round"/>
-    <polygon points="34,34 27,12 47,28" fill="#ecca78"/>
-    <polygon points="70,34 77,12 57,28" fill="#ecca78"/>
-    <polygon points="35,31 31,18 44,28" fill="#f5b9c4"/>
-    <polygon points="69,31 73,18 60,28" fill="#f5b9c4"/>
-    <circle cx="52" cy="46" r="23" fill="#f6e0a6"/>
-    <path d="M30 44 q-6 3 -8 8" stroke="#fff7e0" stroke-width="2" fill="none" opacity=".8"/>
-    <path d="M74 44 q6 3 8 8" stroke="#fff7e0" stroke-width="2" fill="none" opacity=".8"/>
-    <g class="eye"><ellipse cx="43" cy="45" rx="6.5" ry="8" fill="#fff"/><circle cx="43" cy="46" r="5.3" fill="#caa23c"/><circle id="lpupil" cx="43" cy="46" r="3" fill="#22323a"/><circle cx="44.5" cy="44" r="1.3" fill="#fff"/></g>
-    <g class="eye"><ellipse cx="61" cy="45" rx="6.5" ry="8" fill="#fff"/><circle cx="61" cy="46" r="5.3" fill="#caa23c"/><circle id="rpupil" cx="61" cy="46" r="3" fill="#22323a"/><circle cx="62.5" cy="44" r="1.3" fill="#fff"/></g>
-    <path d="M49 54 q3 3 6 0" fill="#f08a9a"/>
-    <path d="M52 56 q-4 4 -9 3 M52 56 q4 4 9 3" fill="none" stroke="#c9914a" stroke-width="1.3"/>
-    <path d="M20 48 h13 M21 53 h12 M71 48 h13 M71 53 h12" stroke="#e8d4a0" stroke-width="1" opacity=".8"/>
-  </svg>
-</div>
+<div id="pet" title="drag me 🐾"><img src="cat.png" alt="" draggable="false"></div>
 <style>
-#pet{position:fixed;right:16px;bottom:6px;z-index:60;width:104px;height:104px;cursor:grab;user-select:none;-webkit-user-select:none;filter:drop-shadow(0 4px 7px rgba(0,0,0,.16))}
+#pet{position:fixed;right:14px;bottom:10px;z-index:60;width:94px;cursor:grab;user-select:none;-webkit-user-select:none;filter:drop-shadow(0 6px 9px rgba(0,0,0,.22))}
+#pet img{width:100%;display:block;pointer-events:none;transform-origin:bottom center;animation:breathe 3.8s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-3px) rotate(-1.5deg)}}
 #pet.grab{cursor:grabbing}
-#tail{transform-box:fill-box;transform-origin:bottom left;animation:sway 3.4s ease-in-out infinite}
-@keyframes sway{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(9deg)}}
-.eye{transform-box:fill-box;transform-origin:center;transition:transform .14s}
-#pet.blink .eye{transform:scaleY(.12)}
-#pet.grab .eye{transform:scale(1.18)}
+#pet.grab img{animation:none;transform:rotate(-5deg) scale(1.05)}
+#pet.wig img{animation:wig .45s}
+@keyframes wig{0%,100%{transform:rotate(0)}25%{transform:rotate(9deg)}75%{transform:rotate(-9deg)}}
 </style>
 <script>
-(function(){var pet=document.getElementById('pet'),lp=document.getElementById('lpupil'),rp=document.getElementById('rpupil');
+(function(){var pet=document.getElementById('pet');
 var s=localStorage.getItem('frontier-pet-pos');if(s){try{var q=JSON.parse(s);pet.style.left=q.x+'px';pet.style.top=q.y+'px';pet.style.right='auto';pet.style.bottom='auto';}catch(e){}}
-setInterval(function(){pet.classList.add('blink');setTimeout(function(){pet.classList.remove('blink')},150)},5400);
-var drag=false,ox=0,oy=0;
-pet.addEventListener('mousedown',function(e){drag=true;pet.classList.add('grab');var r=pet.getBoundingClientRect();ox=e.clientX-r.left;oy=e.clientY-r.top;e.preventDefault();});
-document.addEventListener('mouseup',function(){if(!drag)return;drag=false;pet.classList.remove('grab');var r=pet.getBoundingClientRect();localStorage.setItem('frontier-pet-pos',JSON.stringify({x:Math.round(r.left),y:Math.round(r.top)}));});
-document.addEventListener('mousemove',function(e){
-  if(drag){pet.style.left=(e.clientX-ox)+'px';pet.style.top=(e.clientY-oy)+'px';pet.style.right='auto';pet.style.bottom='auto';return;}
-  var r=pet.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height*0.44,a=Math.atan2(e.clientY-cy,e.clientX-cx);
-  var px=(Math.cos(a)*2.6).toFixed(1),py=(Math.sin(a)*2.6).toFixed(1);
-  lp.setAttribute('transform','translate('+px+','+py+')');rp.setAttribute('transform','translate('+px+','+py+')');
-});})();
+var drag=false,moved=false,ox=0,oy=0;
+pet.addEventListener('mousedown',function(e){drag=true;moved=false;pet.classList.add('grab');var r=pet.getBoundingClientRect();ox=e.clientX-r.left;oy=e.clientY-r.top;e.preventDefault();});
+document.addEventListener('mousemove',function(e){if(!drag)return;moved=true;pet.style.left=(e.clientX-ox)+'px';pet.style.top=(e.clientY-oy)+'px';pet.style.right='auto';pet.style.bottom='auto';});
+document.addEventListener('mouseup',function(){if(!drag)return;drag=false;pet.classList.remove('grab');var r=pet.getBoundingClientRect();localStorage.setItem('frontier-pet-pos',JSON.stringify({x:Math.round(r.left),y:Math.round(r.top)}));if(!moved){pet.classList.add('wig');setTimeout(function(){pet.classList.remove('wig')},460);}});
+})();
 </script>
 </body></html>
