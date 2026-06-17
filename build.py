@@ -260,7 +260,7 @@ footer a{{color:var(--accent);text-decoration:none}}
 <div class="xs">{''.join(x_card(b) for b in x_items)}</div>
 <footer>Pick your own builders. Read AI like a magazine.<br>
 <a href="https://github.com/7amberhuang/frontier" target="_blank">fork it on GitHub</a> · <a href="{TWITTER}" target="_blank">@amber</a> · <a href="manual.html">how to file this in Obsidian</a></footer>
-</div>{CAT}</body></html>"""
+</div></body></html>"""
 
 (OUT / "index.html").write_text(page, encoding="utf-8")
 print(f"✓ built {OUT/'index.html'}  | {len(pod_items)} podcasts, {len(x_items)} builders ({sum(1 for b in x_items if b['field'])} tagged)")
