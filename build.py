@@ -244,7 +244,7 @@ footer a{{color:var(--accent);text-decoration:none}}
 <div class="sec">Builders on X</div>
 <div class="xs">{''.join(x_card(b) for b in x_items)}</div>
 <footer>Pick your own builders. Read AI like a magazine.<br>
-<a href="https://github.com/7amberhuang/frontier" target="_blank">fork it on GitHub</a> · <a href="{TWITTER}" target="_blank">@amber</a> · <a href="manual.html">how to file this in Obsidian</a> · <a href="prophet.html">📜 Daily Prophet edition</a></footer>
+<a href="https://github.com/7amberhuang/frontier" target="_blank">fork it on GitHub</a> · <a href="{TWITTER}" target="_blank">@amber</a> · <a href="manual.html">how to file this in Obsidian</a></footer>
 </div>{CAT}</body></html>"""
 
 (OUT / "index.html").write_text(page, encoding="utf-8")
@@ -319,5 +319,5 @@ body{{margin:0;background:#dccfa8;color:#2c2114;font-family:'IM Fell English',Ge
 <div class="pfoot">Mischief managed. · <a href="index.html">← back to the Muggle edition</a> · <a href="{PORTFOLIO}" target="_blank">Amber Huang</a></div>
 </div>{CAT}</body></html>"""
 
-(OUT / "prophet.html").write_text(prophet, encoding="utf-8")
-print(f"✓ built {OUT/'prophet.html'} (Daily Prophet edition)")
+# Daily Prophet edition removed per user request (2026-06-17) — generation skipped.
+_ = prophet  # keep var to avoid lint; not written

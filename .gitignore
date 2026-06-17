@@ -2,3 +2,5 @@ __pycache__/
 .DS_Store
 custom_feed.json
 .daily.log
+.twikit_cookies.json
+product_feed.json
