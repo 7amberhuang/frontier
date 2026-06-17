@@ -1,0 +1,92 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Frontier · the Obsidian field guide</title>
+<style>
+:root{--ink:#111;--muted:#666;--line:#e4e2dc;--accent:#b8341a;--bg:#faf9f6}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 -apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:720px;margin:0 auto;padding:0 22px 90px}
+a{color:var(--accent)}
+header{text-align:center;border-bottom:2px solid var(--ink);padding:30px 0 16px;margin-bottom:34px}
+.mast{font-family:Georgia,serif;font-size:40px;font-weight:700;line-height:1.1}
+.sub{font-size:14px;color:var(--muted);margin-top:8px;font-style:italic}
+h2{font-family:Georgia,serif;font-size:25px;margin:42px 0 12px;font-weight:700}
+h3{font-size:17px;margin:26px 0 6px;font-weight:600}
+p{margin:0 0 14px}
+.lead{font-size:18px;color:#333}
+.card{background:#fff;border:0.5px solid var(--line);border-radius:10px;padding:18px 20px;margin:18px 0}
+code,pre{font-family:ui-monospace,Menlo,monospace;font-size:13px}
+pre{background:#fff;border:0.5px solid var(--line);border-radius:8px;padding:14px 16px;overflow:auto;line-height:1.5}
+.flow{width:100%;height:auto;margin:10px 0 6px}
+.tag{display:inline-block;font-size:12px;color:var(--accent);background:#f6e7e3;border:0.5px solid #e3b9ae;padding:2px 10px;border-radius:20px;margin:2px 4px 2px 0}
+.step{display:flex;gap:14px;margin:16px 0}
+.num{flex:0 0 30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px}
+footer{text-align:center;border-top:2px solid var(--ink);margin-top:50px;padding-top:18px;font-size:13px;color:var(--muted)}
+</style></head>
+<body><div class="wrap">
+<header><div class="mast">The Obsidian field guide</div>
+<div class="sub">Turn today's AI reading into a second brain — in 10 minutes a day</div></header>
+
+<p class="lead">Reading AI news is easy. <b>Keeping</b> it is the hard part. Here's the loop that turns a daily scroll into compounding knowledge — the same system behind Frontier.</p>
+
+<h2>The loop</h2>
+<svg class="flow" viewBox="0 0 700 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Read, capture, distill, review loop">
+  <defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M2 1L8 5L2 9" fill="none" stroke="#b8341a" stroke-width="1.6"/></marker></defs>
+  <g font-family="-apple-system,sans-serif">
+  <rect x="10" y="45" width="140" height="60" rx="10" fill="#fff" stroke="#e4e2dc"/>
+  <text x="80" y="72" text-anchor="middle" font-size="15" font-weight="600" fill="#111">1 · Read</text>
+  <text x="80" y="90" text-anchor="middle" font-size="11" fill="#666">Frontier daily</text>
+  <rect x="190" y="45" width="140" height="60" rx="10" fill="#fff" stroke="#e4e2dc"/>
+  <text x="260" y="72" text-anchor="middle" font-size="15" font-weight="600" fill="#111">2 · Capture</text>
+  <text x="260" y="90" text-anchor="middle" font-size="11" fill="#666">drop into raw/</text>
+  <rect x="370" y="45" width="140" height="60" rx="10" fill="#fff" stroke="#e4e2dc"/>
+  <text x="440" y="72" text-anchor="middle" font-size="15" font-weight="600" fill="#111">3 · Distill</text>
+  <text x="440" y="90" text-anchor="middle" font-size="11" fill="#666">→ wiki/, tagged</text>
+  <rect x="550" y="45" width="140" height="60" rx="10" fill="#fff" stroke="#b8341a"/>
+  <text x="620" y="72" text-anchor="middle" font-size="15" font-weight="600" fill="#b8341a">4 · Review</text>
+  <text x="620" y="90" text-anchor="middle" font-size="11" fill="#666">weekly, link up</text>
+  <line x1="152" y1="75" x2="186" y2="75" stroke="#b8341a" stroke-width="1.6" marker-end="url(#a)"/>
+  <line x1="332" y1="75" x2="366" y2="75" stroke="#b8341a" stroke-width="1.6" marker-end="url(#a)"/>
+  <line x1="512" y1="75" x2="546" y2="75" stroke="#b8341a" stroke-width="1.6" marker-end="url(#a)"/>
+  </g>
+</svg>
+
+<h2>Set up the vault (once)</h2>
+<p>Make three folders. That's the whole structure — topics live in <b>tags</b>, not folders.</p>
+<pre>my-brain/
+├── raw/      ← inbox: paste anything, messy is fine
+├── wiki/     ← distilled notes, the real brain
+└── _meta/    ← your tag list + templates</pre>
+<p>Why so few folders? Because a note like <i>"how OpenAI grows without ads"</i> is at once marketing, strategy, and a case study. Folders force one home; tags let it live in all three.</p>
+
+<h2>The daily 10 minutes</h2>
+
+<div class="step"><div class="num">1</div><div><h3>Read Frontier, pick one or two</h3>
+<p>Don't try to keep everything. Choose the 1–2 things that actually change how you think.</p></div></div>
+
+<div class="step"><div class="num">2</div><div><h3>Capture into <code>raw/</code></h3>
+<p>Paste the link + one line on <i>why it matters to you</i>. Don't polish. Use this template:</p>
+<pre>---
+source: &lt;url&gt;
+tags: [ai-marketing]
+---
+# &lt;one-line title&gt;
+Why it matters: &lt;your take in a sentence&gt;
+Key point: &lt;the one idea worth keeping&gt;</pre></div></div>
+
+<div class="step"><div class="num">3</div><div><h3>Distill into <code>wiki/</code></h3>
+<p>When a topic shows up two or three times, promote it: open a clean note in <code>wiki/</code>, write the idea in your own words, and <code>[[link]]</code> it to related notes. This is where understanding compounds.</p></div></div>
+
+<div class="step"><div class="num">4</div><div><h3>Review weekly, connect the dots</h3>
+<p>Once a week, skim what you captured, merge duplicates, and add links. Obsidian's graph view will start showing clusters — that's your expertise taking shape.</p></div></div>
+
+<h2>Tag like a pro</h2>
+<p>Pick a small, fixed set of domain tags and stick to them. Mine:</p>
+<p><span class="tag">#ai-marketing</span><span class="tag">#ai-workflow</span><span class="tag">#general-ai</span><span class="tag">#career</span><span class="tag">#investing</span></p>
+<div class="card"><b>Rule of thumb:</b> ≤ 5 tags per note · lowercase-hyphenated · prefer broad over narrow. When a tag keeps recurring, it's becoming one of your lanes.</div>
+
+<h2>That's it</h2>
+<p>Read → capture → distill → review. Ten minutes a day, and in a month you'll have a brain that's actually <i>yours</i> — not 200 unread bookmarks.</p>
+
+<footer><a href="index.html">← back to Frontier</a> · built by <a href="https://amberhuang.world/" target="_blank">Amber Huang</a></footer>
+</div></body></html>

@@ -48,6 +48,43 @@ EDITOR_NOTES = {
     },
 }
 
+CAT = r'''
+<div id="pet" title="click me">
+  <div id="pet-bubble"></div>
+  <svg width="72" height="72" viewBox="0 0 72 72">
+    <ellipse id="cat-tail" cx="58" cy="56" rx="4" ry="13" fill="#d98a5b"/>
+    <ellipse cx="36" cy="56" rx="20" ry="13" fill="#e89b6c"/>
+    <circle cx="36" cy="34" r="17" fill="#e89b6c"/>
+    <polygon points="22,22 20,6 34,18" fill="#e89b6c"/>
+    <polygon points="50,22 52,6 38,18" fill="#e89b6c"/>
+    <polygon points="23,19 22,11 30,18" fill="#f4c4a0"/>
+    <polygon points="49,19 50,11 42,18" fill="#f4c4a0"/>
+    <ellipse class="eye" cx="29" cy="34" rx="3.2" ry="4.4" fill="#2b2b2b"/>
+    <ellipse class="eye" cx="43" cy="34" rx="3.2" ry="4.4" fill="#2b2b2b"/>
+    <polygon points="36,38 33,41 39,41" fill="#c96a4a"/>
+    <path d="M30 44 q6 5 12 0" stroke="#c96a4a" stroke-width="1.3" fill="none"/>
+  </svg>
+</div>
+<style>
+#pet{position:fixed;right:20px;bottom:20px;z-index:60;cursor:pointer;user-select:none;filter:drop-shadow(0 4px 8px rgba(0,0,0,.15))}
+#pet .eye{transform-box:fill-box;transform-origin:center;animation:blink 5s infinite}
+@keyframes blink{0%,92%,100%{transform:scaleY(1)}96%{transform:scaleY(.12)}}
+#cat-tail{transform-box:fill-box;transform-origin:top center;animation:wag 2.4s ease-in-out infinite}
+@keyframes wag{0%,100%{transform:rotate(-13deg)}50%{transform:rotate(13deg)}}
+#pet:hover{animation:hop .5s}
+@keyframes hop{50%{transform:translateY(-7px)}}
+#pet-bubble{position:absolute;bottom:80px;right:0;width:185px;background:#fff;border:1px solid #b8341a;color:#222;font:13px/1.5 -apple-system,sans-serif;padding:9px 12px;border-radius:12px;opacity:0;transform:translateY(6px);transition:.25s;pointer-events:none}
+#pet-bubble.show{opacity:1;transform:translateY(0)}
+</style>
+<script>
+(function(){var p=document.getElementById('pet'),b=document.getElementById('pet-bubble');
+if(localStorage.getItem('frontier-pet')==='off'){p.style.display='none';return;}
+var L=["miao~ today's picks are in 🐾","read one deep dive, skip the doomscroll","builders, not influencers 😼","psst… fork me on GitHub","go log today's learning in Obsidian 📝"],t;
+p.addEventListener('click',function(){b.textContent=L[Math.floor(Math.random()*L.length)];b.classList.add('show');clearTimeout(t);t=setTimeout(function(){b.classList.remove('show')},3600)});
+p.addEventListener('contextmenu',function(e){e.preventDefault();if(confirm('Hide the cat? (clear site data to bring it back)')){p.style.display='none';localStorage.setItem('frontier-pet','off')}});})();
+</script>
+'''
+
 def yt_id(url):
     for pat in (r"[?&]v=([\w-]{6,})", r"youtu\.be/([\w-]{6,})", r"/live/([\w-]{6,})", r"/embed/([\w-]{6,})"):
         m = re.search(pat, url or "")
@@ -116,17 +153,30 @@ def ai_score(title):
     return sum(t.count(k) for k in AI_KW)
 rest_pods = sorted(pod_items[1:], key=lambda p: -ai_score(p["title"]))[:3]
 
-# Builders on X: keep only original substantive takes (drop reposts/reactions), 6 max
+# Builders on X: keep ORIGINAL TECH/AI takes — drop reposts, reactions, and chit-chat.
 REACTION_STARTS = ("great post", "this is the most", "this is the best", "counterpoint",
                    "love this", "so true", "exactly", "this.", "100%", "agreed",
                    "well said", "congrats", "amazing", "incredible", "+1")
-def is_original(tweet):
+TECH_KW = ["ai ", "model", "agent", "llm", "gpt", "claude", "token", "prompt", "coding",
+           "code", "repo", "product", "build", "ship", "startup", "founder", "open source",
+           "compute", "gpu", "inference", "fine-tun", "rag", "eval", "benchmark", " api",
+           "subagent", "context", "reasoning", "robot", "chip", "scal", "venture",
+           "enterprise", "saas", "research", "training", "dataset", "intelligence"]
+CHATTER = ["flight", "weather", "god bless", "good morning", "gm ", "happy birthday",
+           "coffee", "weekend", "tired", "jetlag", "airport", "starlink", "wright brothers",
+           "vacation", "dinner", "congrats on"]
+def tweet_score(tweet):
     t = re.sub(r"https?://\S+", "", tweet).strip()
-    if len(t) < 70:            # mostly a link / one-liner
-        return False
     low = t.lower()
-    return not any(low.startswith(s) for s in REACTION_STARTS)
-x_items = [b for b in x_items if is_original(b["tweet"])][:6]
+    if len(t) < 70:                                   # mostly a link / one-liner
+        return -10
+    if any(low.startswith(s) for s in REACTION_STARTS):  # reaction/repost
+        return -10
+    if any(c in low for c in CHATTER):                # personal chit-chat
+        return -10
+    return sum(1 for k in TECH_KW if k in low)        # tech/AI substance
+x_items = sorted([b for b in x_items if tweet_score(b["tweet"]) >= 1],
+                 key=lambda b: -tweet_score(b["tweet"]))[:6]
 
 def thumb(vid):  # maxres, fall back to hq on error
     return (f'<img src="https://img.youtube.com/vi/{vid}/maxresdefault.jpg" '
@@ -204,13 +254,13 @@ footer a{{color:var(--accent);text-decoration:none}}
 <div class="tag">AI news, curated from builders — not influencers</div>
 <div class="byl">{esc(gen)} · created by <a href="{PORTFOLIO}" target="_blank">Amber Huang</a> · <a href="{TWITTER}" target="_blank">follow on X</a></div></header>
 {hero_html}
-<div class="sec">Deep dives · today's 3 on AI</div>
+<div class="sec">Deep dives</div>
 {('<div class="pods">' + ''.join(pod_card(p) for p in rest_pods) + '</div>') if rest_pods else '<div class="empty">Quiet feed today — only the Editor\'s choice above. More as builders publish.</div>'}
 <div class="sec">Builders on X</div>
 <div class="xs">{''.join(x_card(b) for b in x_items)}</div>
 <footer>Pick your own builders. Read AI like a magazine.<br>
-<a href="https://github.com/7amberhuang/frontier" target="_blank">fork it on GitHub</a> · <a href="{TWITTER}" target="_blank">@amber</a></footer>
-</div></body></html>"""
+<a href="https://github.com/7amberhuang/frontier" target="_blank">fork it on GitHub</a> · <a href="{TWITTER}" target="_blank">@amber</a> · <a href="manual.html">how to file this in Obsidian</a></footer>
+</div>{CAT}</body></html>"""
 
 (OUT / "index.html").write_text(page, encoding="utf-8")
 print(f"✓ built {OUT/'index.html'}  | {len(pod_items)} podcasts, {len(x_items)} builders ({sum(1 for b in x_items if b['field'])} tagged)")
