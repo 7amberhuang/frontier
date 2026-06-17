@@ -107,8 +107,26 @@ for b in xs:
     })
 
 hero = pod_items[0] if pod_items else None
-rest_pods = pod_items[1:7]
-x_items = [b for b in x_items if len(b["tweet"]) >= 70][:8]  # 轻精修：滤掉碎片短推
+
+# Deep dives: rank the rest by AI-industry relevance, keep top 3
+AI_KW = ["ai", " model", "agent", "foundation", "llm", "venture", "gpt", "openai",
+         "anthropic", "compute", "gpu", "intelligence", "robot", "frontier", "scal"]
+def ai_score(title):
+    t = (title or "").lower()
+    return sum(t.count(k) for k in AI_KW)
+rest_pods = sorted(pod_items[1:], key=lambda p: -ai_score(p["title"]))[:3]
+
+# Builders on X: keep only original substantive takes (drop reposts/reactions), 6 max
+REACTION_STARTS = ("great post", "this is the most", "this is the best", "counterpoint",
+                   "love this", "so true", "exactly", "this.", "100%", "agreed",
+                   "well said", "congrats", "amazing", "incredible", "+1")
+def is_original(tweet):
+    t = re.sub(r"https?://\S+", "", tweet).strip()
+    if len(t) < 70:            # mostly a link / one-liner
+        return False
+    low = t.lower()
+    return not any(low.startswith(s) for s in REACTION_STARTS)
+x_items = [b for b in x_items if is_original(b["tweet"])][:6]
 
 def thumb(vid):  # maxres, fall back to hq on error
     return (f'<img src="https://img.youtube.com/vi/{vid}/maxresdefault.jpg" '
@@ -186,7 +204,7 @@ footer a{{color:var(--accent);text-decoration:none}}
 <div class="tag">AI news, curated from builders — not influencers</div>
 <div class="byl">{esc(gen)} · created by <a href="{PORTFOLIO}" target="_blank">Amber Huang</a> · <a href="{TWITTER}" target="_blank">follow on X</a></div></header>
 {hero_html}
-<div class="sec">Long-form picks</div>
+<div class="sec">Deep dives · today's 3 on AI</div>
 {('<div class="pods">' + ''.join(pod_card(p) for p in rest_pods) + '</div>') if rest_pods else '<div class="empty">Quiet feed today — only the Editor\'s choice above. More as builders publish.</div>'}
 <div class="sec">Builders on X</div>
 <div class="xs">{''.join(x_card(b) for b in x_items)}</div>
