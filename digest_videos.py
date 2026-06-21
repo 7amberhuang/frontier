@@ -48,17 +48,22 @@ def summarize(name, title, transcript):
 
 字幕（可能有口语错字，按上下文理解）：
 {transcript[:14000]}"""
-    for attempt in range(3):              # 重试：claude -p 偶发空/超时，别让视频被静默丢掉
+    ERRS = ("api error", "connection closed", "try again", "overloaded",
+            "rate limit", "529", "503", "internal server error")
+    for attempt in range(4):              # 重试：claude -p 偶发空/超时/API错误，别让视频被静默丢掉
         try:
             r = subprocess.run([CLAUDE, "-p", prompt], capture_output=True, text=True,
                                timeout=300, stdin=subprocess.DEVNULL)
             out = r.stdout.strip()
-            if out:
+            low = out.lower()
+            # 有效总结：含模板标记或足够长，且不是 API 错误串（错误串会被当成正文写进去，这正是之前的 bug）
+            if out and ("🎯" in out or "一句话" in out or len(out) > 200) \
+                    and not any(e in low for e in ERRS):
                 return out
-            print(f"     (claude 空，重试 {attempt+1}/3：{r.stderr.strip()[:120]})")
+            print(f"     (claude 无效输出，重试 {attempt+1}/4：{(out or r.stderr.strip())[:110]})")
         except subprocess.TimeoutExpired:
-            print(f"     (claude 超时，重试 {attempt+1}/3)")
-        time.sleep(3)
+            print(f"     (claude 超时，重试 {attempt+1}/4)")
+        time.sleep(4 * (attempt + 1))     # 退避：连接被掐/过载时多等一会
     return ""
 
 _all = json.load(open(HERE / "custom_feed.json")).get("youtube", [])
