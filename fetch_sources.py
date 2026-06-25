@@ -40,5 +40,8 @@ for name, url in YT_CHANNELS:
         })
     print(f"  {name}: {len([e for e in ents if e.get('id')])} 条")
 
-json.dump({"youtube": items}, open(OUT, "w"), ensure_ascii=False, indent=2)
-print(f"✓ wrote {OUT} — {len(items)} custom videos")
+if items:                                # yt-dlp 偶发被 YouTube 限流返回 0 → 别用空覆盖上次的好数据
+    json.dump({"youtube": items}, open(OUT, "w"), ensure_ascii=False, indent=2)
+    print(f"✓ wrote {OUT} — {len(items)} custom videos")
+else:
+    print("⚠ 0 videos（yt-dlp 被限流？）→ 保留上次 custom_feed.json，不覆盖")

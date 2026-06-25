@@ -9,6 +9,9 @@ echo "[$(date '+%F %T')] start" >> "$LOG"
 python3 fetch_sources.py          >> "$LOG" 2>&1
 python3 fetch_x_products.py       >> "$LOG" 2>&1   # TikHub 官号最新推（需 .tikhub_key）
 python3 fetch_x_builders.py       >> "$LOG" 2>&1   # TikHub builders 最新推（Builders on X 保新鲜）
+# 先预习：AI 读完长视频 → 写 Brain + 生成头条英文 Editor's note（build 要用）+ 飞书预习文档
+python3 digest_videos.py          >> "$LOG" 2>&1
+echo "[$(date '+%F %T')] preview done" >> "$LOG"
 python3 build.py                  >> "$LOG" 2>&1
 
 # 推送前 review 门禁：站点必须有实质内容才推，避免空站/坏站覆盖线上
@@ -28,10 +31,6 @@ else
   PUSH="⛔ review 未通过（站点内容异常）→ 跳过 push，保留线上旧版"
 fi
 echo "[$(date '+%F %T')] $PUSH" >> "$LOG"
-
-# 视频预习：抓 Deep-dive 字幕 → claude 蒸馏成"预习" → 写进 Brain
-python3 digest_videos.py >> "$LOG" 2>&1
-echo "[$(date '+%F %T')] preview done" >> "$LOG"
 
 osascript -e 'display notification "今日 AI 日报 + 预习已更新" with title "Frontier 📰" sound name "Glass"' 2>/dev/null
 

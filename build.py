@@ -99,11 +99,18 @@ def clean(t, n=300):
 def esc(s):
     return html.escape(s or "")
 
-def editor_note(title):
-    for k, v in EDITOR_NOTES.items():
-        if k in (title or ""):
-            return v
-    return {}
+def editor_note(hero):
+    """Editor's Choice note = AI-generated for today's hero (digest_videos.py writes
+    .editor_note.json with {note, tags, vid}). vid-matched so it never shows a stale/wrong
+    note — if it doesn't match today's hero, show no blurb at all (honest > fabricated)."""
+    f = OUT / ".editor_note.json"
+    if not f.exists():
+        return {}
+    try:
+        d = json.load(open(f))
+    except Exception:
+        return {}
+    return d if (d.get("note") and d.get("vid") == (hero or {}).get("vid")) else {}
 
 pods = json.load(open(FB / "feed-podcasts.json")).get("podcasts", [])
 _bf = OUT / "builders_feed.json"     # fresh via TikHub (fetch_x_builders.py); else stale central feed
@@ -210,7 +217,7 @@ def prod_chip(p):
 
 hero_html = ""
 if hero:
-    ed = editor_note(hero["title"])
+    ed = editor_note(hero)
     note_html = ""
     if ed.get("note"):
         tags = "".join(f'<span class="edtag">{esc(t)}</span>' for t in ed.get("tags", []))
@@ -291,7 +298,7 @@ footer a{{color:var(--accent);text-decoration:none}}
 print(f"✓ built {OUT/'index.html'}  | {len(pod_items)} podcasts, {len(x_items)} builders ({sum(1 for b in x_items if b['field'])} tagged)")
 
 # ---- Daily Prophet edition (Hogwarts newspaper skin, same data) ----
-_ed = editor_note(hero["title"]) if hero else {}
+_ed = editor_note(hero) if hero else {}
 
 def prophet_pod(p):
     return (f'<a class="pcol" href="{esc(p["url"])}" target="_blank">'

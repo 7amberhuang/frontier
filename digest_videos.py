@@ -67,6 +67,26 @@ def summarize(name, title, transcript):
         time.sleep(4 * (attempt + 1))     # 退避：连接被掐/过载时多等一会
     return ""
 
+def editor_en(v, tr):
+    """站点是英文：给头条生成一句话英文 Editor's note + 2-3 个标签（真·AI 生成，非写死）。"""
+    p = ("You are the editor of an AI-news daily for builders. In ONE punchy English sentence "
+         "(max 26 words), say why this video is worth a reader's time right now. Then on a NEW line, "
+         "give 2-3 short topic tags, comma-separated. No preamble, no quotes.\n"
+         f"Video: {v['title']}\nTranscript:\n{tr[:9000]}")
+    for _ in range(2):
+        try:
+            r = subprocess.run([CLAUDE, "--model", "claude-sonnet-4-6", "-p", p],
+                               capture_output=True, text=True, timeout=180, stdin=subprocess.DEVNULL)
+        except subprocess.TimeoutExpired:
+            time.sleep(4); continue
+        out = r.stdout.strip(); low = out.lower()
+        if out and "api error" not in low and "connection closed" not in low:
+            ls = [x.strip() for x in out.splitlines() if x.strip()]
+            tags = [t.strip() for t in re.split(r"[,，]", ls[1])][:3] if len(ls) > 1 else []
+            return {"note": ls[0].strip('"').strip(), "tags": tags, "vid": v["vid"]}
+        time.sleep(4)
+    return {}
+
 _all = json.load(open(HERE / "custom_feed.json")).get("youtube", [])
 _seen, vids = set(), []
 for v in _all:                       # 每频道取一条，去重
@@ -76,7 +96,7 @@ for v in _all:                       # 每频道取一条，去重
     vids.append(v)
 vids = vids[:MAX]
 OUTDIR.mkdir(parents=True, exist_ok=True)
-blocks, feishu = [], []
+blocks, feishu, hero_en = [], [], {}
 for v in vids:
     tr = captions(v["vid"])
     if len(tr) < 400:
@@ -91,6 +111,11 @@ for v in vids:
     bl = next((l for l in s.splitlines() if "一句话" in l or "🎯" in l), s[:80])
     feishu.append(f"· {v['name']}：{re.sub(r'[*🎯]', '', bl).replace('一句话','').strip(': ：')[:60]}")
     print(f"  ✓ {v['name']} 预习完成")
+    if not hero_en:                       # 第一条成功的就是头条 → 生成站点的英文 Editor's note
+        hero_en = editor_en(v, tr)
+
+# 头条英文注释（站点 Editor's Choice 用，vid 标记防串）
+(HERE / ".editor_note.json").write_text(json.dumps(hero_en, ensure_ascii=False), encoding="utf-8")
 
 note = OUTDIR / f"{TODAY}.md"
 front = f"---\ntitle: 每日预习 {TODAY}\ncategory: synthesis\ntags: [general-ai, ai-workflow]\ndate: {TODAY}\n---\n\n# 📖 每日预习 · {TODAY}\n\n> AI 已帮你读完今天的长视频。先看这个再决定要不要花一小时沉浸看。\n\n"
