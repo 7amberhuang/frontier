@@ -102,8 +102,17 @@ for v in vids:
 
 _pdu = HERE / ".preview_doc_url"
 preview_url = _pdu.read_text(encoding="utf-8").strip() if _pdu.exists() else SITE
-intro = (f"**{today}** · AI 替你读完 **{len(bs)}** 条长视频，先看预习再决定要不要花一小时深看 👇"
-         if bs else f"**{today}** · 今日 AI 日报已更新 👇")
+func = (f"**{today}** · AI 替你读完 **{len(bs)}** 条长视频，先看预习再决定要不要花一小时深看 👇"
+        if bs else f"**{today}** · 今日 AI 日报已更新 👇")
+q = {}
+_qf = HERE / ".quote.json"
+if _qf.exists():
+    try:
+        q = json.load(open(_qf))
+    except Exception:
+        q = {}
+# 顶部「今日金句」= 真·当日 builder 推文（pick_quote.py 校验过原话），每天不一样
+intro = (f"💬 *“{q['quote']}”* —— **{q['author']}**\n\n{func}") if q.get("quote") else func
 
 card = {
     "config": {"wide_screen_mode": True},

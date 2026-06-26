@@ -9,6 +9,7 @@ echo "[$(date '+%F %T')] start" >> "$LOG"
 python3 fetch_sources.py          >> "$LOG" 2>&1
 python3 fetch_x_products.py       >> "$LOG" 2>&1   # TikHub 官号最新推（需 .tikhub_key）
 python3 fetch_x_builders.py       >> "$LOG" 2>&1   # TikHub builders 最新推（Builders on X 保新鲜）
+python3 pick_quote.py             >> "$LOG" 2>&1   # 今日金句：从 builder 推文挑真·原话（校验防篡改）
 # 先预习：AI 读完长视频 → 写 Brain + 生成头条英文 Editor's note（build 要用）+ 飞书预习文档
 python3 digest_videos.py          >> "$LOG" 2>&1
 echo "[$(date '+%F %T')] preview done" >> "$LOG"
